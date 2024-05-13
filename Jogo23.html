@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    canvas {
+      border: 2px solid #333;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+  </style>
+  <title>Breakout Game</title>
+</head>
+<body>
+
+  <div id="canvas-container"></div>
+  <button onclick="startGame()">Start</button>
+
+  <script>
+    let ball;
+    let paddle;
+    let bricks = [];
+    let points = 0;
+    let gameover = false;
+
+    function setupGame() {
+      let cnv = createCanvas(900, 400);
+      cnv.parent('canvas-container');
+      ball = new Ball();
+      paddle = new Paddle();
+
+      // Cria tijolos
+      const brickWidth = 80;
+      const brickHeight = 20;
+      const totalRows = 5;
+      const totalCols = width / brickWidth;
+
+      for (let i = 0; i < totalRows; i++) {
+        for (let j = 0; j < totalCols; j++) {
+          bricks.push(new Brick(j * brickWidth, i * brickHeight, brickWidth, brickHeight));
+        }
+      }
+    }
+
+    function startGame() {
+      setTimeout(() => {
+        gameover = false;
+        points = 0;
+        setupGame();
+        loop();
+      }, 1000);
+    }
+
+    function draw() {
+      background(0, 0, 255);
+
+      if (!gameover) {
+        ball.move();
+        ball.display();
+
+        paddle.update();
+        paddle.display();
+        paddle.checkCollision(ball);
+
+        for (let brick of bricks) {
+          brick.display();
+          brick.checkCollision(ball);
+        }
+
+        textSize(16);
+        textAlign(LEFT, TOP);
+        fill(255, 255, 255);
+        text(`Points: ${points}`, 10, 10);
+
+        if (ball.y + ball.radius >= height && !paddle.checkCollision(ball)) {
+          gameover = true;
+          noLoop();
+          textSize(32);
+          textAlign(CENTER, CENTER);
+          fill(255, 255, 255);
+          text(`Game Over! Points: ${points}`, width / 2, height / 2 + 30);
+        }
+
+        if (bricks.length === 0) {
+          gameover = true;
+          noLoop();
+          textSize(32);
+          textAlign(CENTER, CENTER);
+          fill(255, 255, 255);
+          text(`Você Ganhou! Points: ${points}`, width / 2, height / 2 + 30);
+        }
+      }
+    }
+
+    // Restante do código (classe Ball, Paddle, Brick) permanece inalterado
+  </script>
+</body>
+</html>

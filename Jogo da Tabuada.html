@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seu Título Aqui</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      margin: 0;
+      background-color: #3c07fa;
+      color: #cee406;
+      font-family: 'Arial', sans-serif;
+    }
+
+    canvas {
+      margin-top: 20px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      margin-top: 0;
+    }
+
+    hr {
+      width: 100%;
+      border: none;
+      height: 1px;
+      background-color: #1604b9;
+      margin: 10px 0 20px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #1604b9;
+      color: #cee406;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #cee406;
+      color: #1604b9;
+    }
+
+    #score {
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Jogos de Tabuada</h1>
+
+  <script>
+    let num1, num2, resultado;
+let options = [];
+let score = 0;
+let errorMessage = "";
+
+function setup() {
+  createCanvas(800, 500);
+  nextQuestion();
+}
+
+function draw() {
+  background(0, 0, 255); // Fundo azul
+
+  // Exibe título do jogo
+  textSize(32);
+  fill(255);
+  text("Jogo da Tabuada", width / 2.5, height / 6);
+
+  // Exibe pergunta
+  textSize(32);
+  fill(255);
+  text(`${num1} x ${num2} = ?`, width / 2, height / 4);
+
+  // Exibe opções
+  textSize(24);
+  for (let i = 0; i < options.length; i++) {
+    fill(255);
+    text(options[i].value, options[i].x, options[i].y);
+  }
+
+  // Exibe pontuação
+  textSize(16);
+  text(`Pontuação: ${score}`, width / 2, 30);
+
+  // Exibe mensagem de erro no meio da tela
+  textSize(24);
+  fill(255, 0, 0); // Vermelho
+  text(errorMessage, width / 2, height / 2);
+}
+
+function mousePressed() {
+  // Verifica se o jogador clicou na resposta correta
+  for (let i = 0; i < options.length; i++) {
+    let option = options[i];
+    let d = dist(mouseX, mouseY, option.x, option.y);
+    if (d < 20 && option.value === resultado) {
+      score++;
+    } else if (d < 20) {
+      errorMessage = "Erro! Clique em OK para recomeçar.";
+      score = 0;
+    }
+  }
+  
+  nextQuestion();
+}
+
+function nextQuestion() {
+  num1 = floor(random(1, 11));
+  num2 = floor(random(1, 11));
+  resultado = num1 * num2;
+
+  options = [];
+  for (let i = 0; i < 4; i++) {
+    let value = resultado + floor(random(-5, 5));
+    let x = random(50, width - 50);
+    let y = random(height / 2, height - 50);
+    options.push({ value, x, y });
+  }
+
+  // Adiciona a resposta correta
+  options.push({ value: resultado, x: random(50, width - 50), y: random(height / 2, height - 50) });
+
+  // Embaralha as opções
+  shuffle(options, true);
+  
+  // Limpa a mensagem de erro
+  errorMessage = "";
+}
+
+  </script>
+</body>
+
+</html>

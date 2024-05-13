@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo de Carta Matemática Algébrica</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+  }
+  .header {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #333;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .game-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+  }
+  .card {
+    width: 100px;
+    height: 150px;
+    border: 1px solid black;
+    margin: 5px;
+    display: inline-block;
+    text-align: center;
+    line-height: 150px;
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+  }
+  .card-number {
+    position: center;
+    top: 5px;
+    left: 5px;
+    font-size: 40px;
+    color: rgb(12, 12, 12);
+  }
+  .btn-container {
+    margin-top: 20px;
+    text-align: center;
+  }
+  .btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 0 10px;
+  }
+</style>
+</head>
+<body>
+<div class="header">Jogo de Carta Matemática Algébrica</div>
+<div class="game-container">
+  <div id="gameBoard">
+    <!-- Cards will be added here -->
+  </div>
+  <div class="btn-container">
+    <button class="btn" onclick="startGame()">Start</button>
+    <button class="btn" onclick="resetGame()">Reset</button>
+  </div>
+</div>
+
+<script>
+  // Função para gerar uma equação aleatória
+  function generateEquation() {
+    const equations = [
+      
+       "se a=5 e b=2 a*b+2*a",
+      "se a=3 e b=4 a*b+2*a",
+      "se a=7 e b=10 a*b+2*a",
+      "se a=2 e b=2 a*b+2*a",
+      "se a=1 e b=2 a*b+2*a",
+      "se a=5 e b=10 a*b+2*a",
+      "se a=8 e b=2 a*b+2*a",
+      "1/2+5/2",
+      "2/10 +12/10",
+      "16/25-5/25",
+      "10/2",
+      "Se numero 3 , 9, 17 é impar qual entre eles são par?",
+      "Escreva a sequencia 2...4.....6....8....10....12_______",
+            "De exempo de um numero composto ?",
+      "Como se classifica 17/1 , 17/17",
+
+      // Adicione suas equações aqui
+    ];
+    const randomIndex = Math.floor(Math.random() * equations.length);
+    return equations[randomIndex];
+  }
+
+  // Função para verificar se a resposta está correta
+  function checkAnswer(equation, answer) {
+    const result = eval(equation.split('=')[1].trim()); // Avalia a parte da equação após o sinal de igual
+    return result === answer;
+  }
+
+  // Função para criar cartas com equações
+  function createCards(numCards) {
+    const gameBoard = document.getElementById('gameBoard');
+    gameBoard.innerHTML = ''; // Limpa o conteúdo anterior
+    for (let i = 0; i < numCards; i++) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.backgroundColor = getRandomColor(); // Define uma cor aleatória para a carta
+      const cardNumber = document.createElement('span');
+      cardNumber.className = 'card-number';
+      cardNumber.textContent = i + 1; // Número da carta
+      card.appendChild(cardNumber);
+      card.addEventListener('click', function() {
+        const equation = generateEquation();
+        alert(`Qual é o valor de ${equation}`);
+      });
+      gameBoard.appendChild(card);
+    }
+  }
+
+  // Função para gerar uma cor aleatória em hexadecimal
+  function getRandomColor() {
+    return '#' + Math.floor(Math.random()*16777215).toString(16);
+  }
+
+  // Função para iniciar o jogo
+  function startGame() {
+    createCards(49); // Criando 49 cartas
+  }
+
+  // Função para reiniciar o jogo
+  function resetGame() {
+    const gameBoard = document.getElementById('gameBoard');
+    gameBoard.innerHTML = ''; // Limpa todas as cartas
+  }
+</script>
+</body>
+</html>

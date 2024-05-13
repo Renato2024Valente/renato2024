@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enigma do Cofre</title>
+<h1> O Enigma do Cofre</h1> 
+<h4>Prof: Renato Mat 7º</h4>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('B.jpg.jpg');
+  }
+  h1 {text-align: center;
+    font-size: larger;
+    font: 48px;
+    
+  }
+  .header {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #00bfff;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .game-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+  }
+  .input-container {
+    margin-top: 20px;
+  }
+  .input-label {
+    font-size: 18px;
+    margin-right: 10px;
+  }
+  .input-field {
+    padding: 8px;
+    font-size: 16px;
+    width: 100px;
+  }
+  .submit-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+  }
+  .submit-btn:hover {
+    background-color: #45a049;
+  }
+  #feedback {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #ff0000;
+  }
+  #equation-image {
+    max-width: 300px;
+    margin-top: 20px;
+  }
+  #timer-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #000;
+    color: #ff0000;
+    padding: 10px;
+    font-size: 24px;
+  }
+  #stop-btn {
+    margin-top: 10px;
+    background-color: #ff0000;
+  }
+  #reset-btn {
+    margin-top: 10px;
+    background-color: #808080;
+  }
+</style>
+</head>
+<body>
+<div class="header">Descubra a minha Incognita </div>
+<div class="game-container">
+  <img src="bau.jpg" alt="Cofre" id="equation-image">
+  <p id="equation" style="font-size: 35px;"></p>
+  <div class="input-container">
+    <label for="answer" class="input-label">Resposta:</label>
+    <input type="text" id="answer" class="input-field" placeholder="Digite sua resposta">
+    <button class="submit-btn" onclick="checkAnswer()">Verificar</button>
+  </div>
+  <div id="feedback"></div>
+</div>
+
+<div id="timer-container">
+  <div id="timer">01:00</div>
+  <button id="stop-btn" onclick="stopAlarm()">Parar Sirene</button>
+  <button id="reset-btn" onclick="resetGame()">Resetar</button>
+</div>
+
+<audio id="bellSound" src="bell.mp3"></audio>
+
+<script>
+  const equations = [
+    { equation: 'se a=2 e b=4, a + b', answer: 6 },
+    { equation: 'se a=3 e b=5, a * b', answer: 15 },
+    { equation: 'se a=4 e b=6, a - b', answer: -2 },
+    { equation: 'se a=2 e b=4, a + b', answer: 6 },
+    { equation: 'se a=3 e b=5, a * b', answer: 15 },
+    { equation: 'se a=4 e b=6, a - b', answer: -2 },
+    { equation: 'se a=2 e b=3, a * b + a', answer: 7 },
+    { equation: 'se a=3 e b=3, a^2 + b^2', answer: 18 },
+    { equation: 'se a=5 e b=2, a + 2 * b', answer: 9 },
+    { equation: 'se a=6 e b=4, 2 * a - b', answer: 8 },
+    { equation: 'se a=3 e b=2, a * a - b * b', answer: 5 },
+    { equation: 'se a=4 e b=2, a / b', answer: 2 },
+    { equation: 'se a=5 e b=5, a + b + a * b', answer: 35 },
+    { equation: 'se a=6 e b=3, a * b - a', answer: 12 },
+    { equation: 'se a=4 e b=3, a + 2 * b', answer: 10 },
+    { equation: 'se a=7 e b=2, a - b + a', answer: 12 },
+    { equation: 'se a=3 e b=4, 2 * a + b', answer: 10 },
+    { equation: 'se a=5 e b=3, a * b + b', answer: 20 },
+    { equation: 'se a=2 e b=5, a^2 + b', answer: 9 },
+    { equation: 'se a=7 e b=3, a * a - b', answer: 46 },
+    { equation: 'se a=8 e b=4, a + b + a - b', answer: 12 },
+    { equation: 'se a=5 e b=4, a * a - b * b', answer: 9 },
+    { equation: 'se a=3 e b=6, a + b * b', answer: 39 },
+    { equation: 'se a=6 e b=5, a - 2 * b', answer: -4 },
+    { equation: 'se a=4 e b=7, 2 * a - 3 * b', answer: -14 },
+    { equation: 'se a=2 e b=7, a^2 + b * b', answer: 53 },
+    { equation: 'se a=3 e b=8, a + b - a * b', answer: 19 },
+    { equation: 'se a=5 e b=8, 2 * a - b + b', answer: 13 },
+    { equation: 'se a=6 e b=9, a * b - b', answer: 45 },
+    { equation: 'se a=4 e b=9, a - b * a', answer: -32 },
+    { equation: 'se a=8 e b=5, a^2 + b', answer: 69 },
+    { equation: 'se a=7 e b=6, a + b * a', answer: 49 },
+    { equation: 'se a=9 e b=7, 2 * a - 3 * b', answer: 11 },
+    { equation: 'se a=8 e b=6, a^2 - b^2', answer: 28 },
+    { equation: 'se a=5 e b=9, a * b + a', answer: 50 },
+    { equation: 'se a=9 e b=8, a / b + b / a', answer: 3.625 },
+    { equation: 'se a=7 e b=8, a * b + a', answer: 63 },
+    { equation: 'se a=8 e b=9, a - b + a * b', answer: 64 },
+    { equation: 'se a=9 e b=9, a^2 + b^2', answer: 162 },
+  ];
+
+  let currentEquationIndex = 0;
+  let timeInSeconds = 60;
+  let timerInterval;
+
+  function displayCurrentEquation() {
+    const equationElement = document.getElementById('equation');
+    equationElement.textContent = equations[currentEquationIndex].equation;
+  }
+
+  function startTimer() {
+    timerInterval = setInterval(function() {
+      timeInSeconds--;
+      const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
+      const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
+      document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+      if (timeInSeconds === 0) {
+        clearInterval(timerInterval);
+        document.getElementById('perdeujogo.mp3').play();
+      }
+    }, 1000);
+  }
+
+  function stopAlarm() {
+    document.getElementById('bellSound').pause();
+    document.getElementById('bellSound').currentTime = 0;
+  }
+
+  function checkAnswer() {
+    const answer = document.getElementById('answer').value;
+    const correctAnswer = equations[currentEquationIndex].answer;
+    const feedback = document.getElementById('feedback');
+    
+    if (answer === '') {
+      feedback.textContent = 'Por favor, insira sua resposta.';
+    } else if (parseFloat(answer) === correctAnswer) {
+      feedback.textContent = 'Parabéns! Você abriu o cofre.';
+      currentEquationIndex++;
+      if (currentEquationIndex < equations.length) {
+        displayCurrentEquation();
+      } else {
+        document.getElementById('input-container').style.display = 'none';
+        clearInterval(timerInterval);
+      }
+    } else {
+      feedback.textContent = 'Resposta incorreta. Tente novamente.';
+    }
+  }
+
+  function resetGame() {
+    clearInterval(timerInterval);
+    document.getElementById('timer').textContent = '01:00';
+    timeInSeconds = 60;
+    currentEquationIndex = 0;
+    displayCurrentEquation();
+    document.getElementById('input-container').style.display = 'block';
+    document.getElementById('feedback').textContent = '';
+  }
+
+  window.onload = function() {
+    displayCurrentEquation();
+    startTimer();
+  };
+</script>
+</body>
+</html>

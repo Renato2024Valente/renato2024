@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo de Carta Matemática Algébrica</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+    }
+    .header {
+        text-align: center;
+        padding: 20px 0;
+        background-color: #333;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    .game-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+    }
+    .card {
+        width: calc(20% - 10px); /* 20% do tamanho do contêiner - 10px de espaçamento */
+        height: 70px;
+        border: 1px solid black;
+        margin: 5px;
+        display: inline-block;
+        text-align: center;
+        line-height: 50px;
+        font-size: 16px;
+        cursor: pointer;
+        position: relative;
+    }
+    .card-number {
+        font-size: 35px; /* Tamanho da fonte aumentado */
+        color: rgb(12, 12, 12);
+    }
+    .btn-container {
+        margin-top: 20px;
+        text-align: center;
+    }
+    .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 0 10px;
+    }
+</style>
+</head>
+<body>
+<div class="header">Jogo de Carta Matemática Algébrica</div>
+<div class="game-container">
+    <div id="gameBoard">
+        <!-- Cards will be added here -->
+    </div>
+    <div class="btn-container">
+        <button class="btn" onclick="startGame()">Start</button>
+        <button class="btn" onclick="resetGame()">Reset</button>
+        <button class="btn" onclick="showCustomDialog()">Verificar Resposta</button> <!-- Adicionado botão de Verificar Resposta -->
+    </div>
+</div>
+
+<!-- Elementos para a caixa de diálogo -->
+<div class="dialog-overlay" id="dialogOverlay" onclick="hideCustomDialog()">
+    <div class="dialog-box" id="dialogBox" onclick="event.stopPropagation()">
+        <span id="dialogText"></span>
+        <br>
+        <button onclick="hideCustomDialog()">Fechar</button>
+    </div>
+</div>
+
+<script>
+// Função para exibir a caixa de diálogo personalizada
+function showCustomDialog() {
+    const equation = generateEquation();
+    const dialogText = document.getElementById('dialogText');
+    dialogText.innerHTML = `<span style="font-size: 35px;">Qual é o valor de ${equation}</span>`;
+    const dialogOverlay = document.getElementById('dialogOverlay');
+    dialogOverlay.style.display = 'flex'; // Exibe a caixa de diálogo
+}
+
+// Função para esconder a caixa de diálogo personalizada
+function hideCustomDialog() {
+    const dialogOverlay = document.getElementById('dialogOverlay');
+    dialogOverlay.style.display = 'none'; // Esconde a caixa de diálogo
+}
+
+// Função para criar cartas com equações
+function createCards(numCards) {
+    const gameBoard = document.getElementById('gameBoard');
+    gameBoard.innerHTML = ''; // Limpa o conteúdo anterior
+    for (let i = 0; i < numCards; i++) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.backgroundColor = getRandomColor(); // Define uma cor aleatória para a carta
+        const cardNumber = document.createElement('span');
+        cardNumber.className = 'card-number';
+        cardNumber.textContent = i + 1; // Número da carta
+        card.appendChild(cardNumber);
+        card.addEventListener('click', function() {
+            showCustomDialog(); // Mostra a caixa de diálogo quando uma carta é clicada
+        });
+        gameBoard.appendChild(card);
+    }
+}
+
+// Função para gerar uma cor aleatória em hexadecimal
+function getRandomColor() {
+    return '#' + Math.floor(Math.random()*16777215).toString(16);
+}
+
+// Função para iniciar o jogo
+function startGame() {
+    createCards(49); // Criando 49 cartas
+}
+
+// Função para reiniciar o jogo
+function resetGame() {
+    const gameBoard = document.getElementById('gameBoard');
+    gameBoard.innerHTML = ''; // Limpa todas as cartas
+}
+
+// Função para gerar uma equação aleatória
+function generateEquation() {
+    const equations = [
+        "X+10 = 12",
+        "X+11 = 12",
+        "X+13 = 12",
+        "X+17 = 12",
+        "X-15 = 20",
+        "X+16 = 30",
+        "X+5 = 12",
+        "X+1 = 14",
+        "X-30 = 100",
+        "X+25 = 50",
+        "X+45 = 65",
+        "X+98 = 100",
+        "X-12 = 24",
+        "X+3 = 12",
+        "se a=5 e b=2 a*b+2*a",
+        "se a=3 e b=4 a*b+2*a",
+        "se a=7 e b=10 a*b+2*a",
+        "se a=2 e b=2 a*b+2*a",
+        "se a=1 e b=2 a*b+2*a",
+        "se a=5 e b=10 a*b+2*a",
+        "se a=8 e b=2 a*b+2*a",
+        "1/2+5/2",
+        "2/10 +12/10",
+        "16/25-5/25",
+        "10/2",
+        "Se numero 3 , 9, 17 é impar qual entre eles são par?",
+        "Escreva a sequencia 2...4.....6....8....10....12_______",
+        "De exempo de um numero composto ?",
+        "Como se classifica 17/1 , 17/17",
+        // Adicione suas equações aqui
+    ];
+    const randomIndex = Math.floor(Math.random() * equations.length);
+    return equations[randomIndex];
+}
+</script>
+</body>
+</html>
